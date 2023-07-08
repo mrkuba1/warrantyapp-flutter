@@ -4,8 +4,9 @@ class Product {
   final String type;
   final DateTime purchaseDate;
   final double amount;
+  final String currency;
   final String store;
-  final double lenght_warranty;
+  final double lengthWarranty;
 
   Product({
     required this.id,
@@ -13,7 +14,15 @@ class Product {
     required this.type,
     required this.purchaseDate,
     required this.amount,
+    required this.currency,
     required this.store,
-    required this.lenght_warranty,
+    required this.lengthWarranty,
   });
+
+  @override
+  String toString() {
+    return 'Product(id: $id, name: $name, type: $type, '
+        'purchaseDate: $purchaseDate, amount: $amount$currency, '
+        'store: $store)';
+  }
 }

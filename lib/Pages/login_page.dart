@@ -3,7 +3,10 @@ import 'package:warrantyapp/Pages/profile_page.dart';
 import 'package:warrantyapp/Pages/register_page.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -71,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => RegisterProfilePage(),
+                            builder: (context) => const RegisterProfilePage(),
                           ),
                         );
                       },

@@ -14,7 +14,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
+
+  //TODO: Gesture, PL language, colors, style, save to file and read data from files,
 }

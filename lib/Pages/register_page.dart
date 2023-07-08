@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 class RegisterProfilePage extends StatefulWidget {
+  const RegisterProfilePage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _RegisterProfilePageState createState() => _RegisterProfilePageState();
 }
 

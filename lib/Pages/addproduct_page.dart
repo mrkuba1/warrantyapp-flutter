@@ -1,27 +1,11 @@
 import 'package:flutter/material.dart';
-
-class Product {
-  final String id;
-  final String name;
-  final String type;
-  final DateTime purchaseDate;
-  final double amount;
-  final String store;
-  final double lenght_warranty;
-
-  Product({
-    required this.id,
-    required this.name,
-    required this.type,
-    required this.purchaseDate,
-    required this.amount,
-    required this.store,
-    required this.lenght_warranty,
-  });
-}
+import 'package:warrantyapp/product_class.dart';
 
 class AddProductPage extends StatefulWidget {
+  const AddProductPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _AddProductPageState createState() => _AddProductPageState();
 }
 
@@ -30,10 +14,12 @@ class _AddProductPageState extends State<AddProductPage> {
   final TextEditingController typeController = TextEditingController();
   final TextEditingController purchaseDateController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
+  String selectedCurrency = 'PLN';
   final TextEditingController storeController = TextEditingController();
   final TextEditingController warrantyLengthController =
       TextEditingController();
   bool kontrola = false;
+  List<String> currencyOptions = ['USD', 'EUR', 'GBP', 'PLN'];
 
   @override
   void initState() {
@@ -78,9 +64,31 @@ class _AddProductPageState extends State<AddProductPage> {
                     purchaseDateController.text = formattedDate;
                   }
                 }),
-            TextField(
-              controller: amountController,
-              decoration: const InputDecoration(labelText: 'Amount'),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: amountController,
+                    decoration: InputDecoration(
+                      labelText: 'Amount ($selectedCurrency)',
+                    ),
+                  ),
+                ),
+                DropdownButton<String>(
+                  value: selectedCurrency,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedCurrency = newValue!;
+                    });
+                  },
+                  items: currencyOptions.map((String currency) {
+                    return DropdownMenuItem<String>(
+                      value: currency,
+                      child: Text(currency),
+                    );
+                  }).toList(),
+                ),
+              ],
             ),
             TextField(
               controller: storeController,
@@ -120,7 +128,7 @@ class _AddProductPageState extends State<AddProductPage> {
                     DateTime.parse(purchaseDateController.text);
                 double amount = double.parse(amountController.text);
                 String store = storeController.text;
-                double length_warranty = kontrola
+                double lengthWarranty = kontrola
                     ? double.tryParse(warrantyLengthController.text) ?? 0
                     : 2;
 
@@ -130,11 +138,10 @@ class _AddProductPageState extends State<AddProductPage> {
                   type: type,
                   purchaseDate: purchaseDate,
                   amount: amount,
+                  currency: selectedCurrency,
                   store: store,
-                  lenght_warranty: length_warranty,
+                  lengthWarranty: lengthWarranty,
                 );
-
-                // Return the new product to the profile page
                 Navigator.pop(context, newProduct);
               },
               child: const Text('Save'),
