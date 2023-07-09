@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:warrantyapp/Pages/profile_page.dart';
 import 'package:warrantyapp/Pages/register_page.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   String name = '';
   String password = '';
+
+  final storage = const FlutterSecureStorage();
+
+  Future<bool> authenticateUser(String name, String password) async {
+    // Tutaj dodaj logikę weryfikacji poprawności danych logowania.
+    // Możesz sprawdzić, czy podane dane są zgodne z tym, co jest przechowywane w bazie danych lub innym źródle danych.
+
+    // Przykładowo, można odczytać przechowywane dane logowania z bezpiecznego składowiska i porównać z podanymi danymi.
+    final storedName = await storage.read(key: 'name');
+    final storedPassword = await storage.read(key: 'password');
+
+    if (name == storedName && password == storedPassword) {
+      return true; // Logowanie udane
+    } else {
+      return false; // Logowanie nieudane
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +74,36 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     const SizedBox(width: 1),
                     ElevatedButton(
-                      onPressed: () {
-                        // Perform login logic here
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProfilePage(name),
-                          ),
-                        );
+                      onPressed: () async {
+                        final isAuthenticated =
+                            await authenticateUser(name, password);
+                        if (isAuthenticated) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfilePage(name),
+                            ),
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Authentication Failed'),
+                                content: const Text(
+                                    'Invalid credentials. Please try again.'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
                       },
                       child: const Text('Log'),
                     ),

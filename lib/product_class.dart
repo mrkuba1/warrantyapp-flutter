@@ -6,7 +6,7 @@ class Product {
   final double amount;
   final String currency;
   final String store;
-  final double lengthWarranty;
+  final int lengthWarranty;
 
   Product({
     required this.id,

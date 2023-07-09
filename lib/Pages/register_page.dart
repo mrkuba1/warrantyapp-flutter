@@ -1,6 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class RegisterProfilePage extends StatefulWidget {
   const RegisterProfilePage({super.key});
@@ -14,20 +13,20 @@ class _RegisterProfilePageState extends State<RegisterProfilePage> {
   String name = '';
   String password = '';
 
-  Future<void> saveDataToFile(String data) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/profile_data.txt');
-    await file.writeAsString(data);
+  Future<void> saveDataToSecureStorage(String name, String password) async {
+    const storage = FlutterSecureStorage();
+    await storage.write(key: 'name', value: name);
+    await storage.write(key: 'password', value: password);
   }
 
-  Future<List<String>?> readDataFromFile() async {
-    try {
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/profile_data.txt');
-      final contents = await file.readAsString();
-      final lines = contents.split('\n');
-      return lines;
-    } catch (e) {
+  Future<Map<String, String>?> readDataFromSecureStorage() async {
+    const storage = FlutterSecureStorage();
+    final name = await storage.read(key: 'name');
+    final password = await storage.read(key: 'password');
+
+    if (name != null && password != null) {
+      return {'name': name, 'password': password};
+    } else {
       return null;
     }
   }
@@ -63,8 +62,7 @@ class _RegisterProfilePageState extends State<RegisterProfilePage> {
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
-                final data = 'Login: $name\nPassword: $password';
-                saveDataToFile(data);
+                saveDataToSecureStorage(name, password);
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
