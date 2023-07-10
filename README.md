@@ -1,16 +1,25 @@
-# warrantyapp
+# **WarrnatyApp mobile flutter**
 
-A new Flutter project.
+```
+loading: =##########----------= 50%
+```
+## Table of Contents
+ * [Descrption](#description)
+ * [Instalation](#installation)
 
-## Getting Started
+## **Description:** 
+A mobile app storing warranty data for products purchased by the user. Making this project taught me a lot, from better level of Dart and flutter to using GitHub.
 
-This project is a starting point for a Flutter application.
+## **Installation**
 
-A few resources to get you started if this is your first Flutter project:
+Open terminal:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```bash
+git clone https://github.com/mrkuba1/warrantyapp-flutter.git
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+cd warrantyapp-flutter
+
+```
+Next you must have installed Flutter on your device. More read [Flutter documentation](https://docs.flutter.dev/get-started/install)
+
+
