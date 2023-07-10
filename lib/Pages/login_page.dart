@@ -13,22 +13,42 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String name = '';
   String password = '';
+  Color selectedColor = Colors.black;
 
   final storage = const FlutterSecureStorage();
 
-  Future<bool> authenticateUser(String name, String password) async {
-    // Tutaj dodaj logikę weryfikacji poprawności danych logowania.
-    // Możesz sprawdzić, czy podane dane są zgodne z tym, co jest przechowywane w bazie danych lub innym źródle danych.
+  @override
+  void initState() {
+    super.initState();
+    readDataFromSecureStorage();
+  }
 
-    // Przykładowo, można odczytać przechowywane dane logowania z bezpiecznego składowiska i porównać z podanymi danymi.
+  Future<void> readDataFromSecureStorage() async {
     final storedName = await storage.read(key: 'name');
     final storedPassword = await storage.read(key: 'password');
-
-    if (name == storedName && password == storedPassword) {
-      return true; // Logowanie udane
-    } else {
-      return false; // Logowanie nieudane
+    final storedColor = await storage.read(key: 'color');
+    if (storedName != null && storedPassword != null && storedColor != null) {
+      setState(() {
+        name = storedName;
+        password = storedPassword;
+        selectedColor = _parseColor(storedColor);
+      });
     }
+  }
+
+  Color _parseColor(String colorString) {
+    return Color(int.parse(colorString, radix: 16));
+  }
+
+  Future<bool> authenticateUser(String name, String password) async {
+    final storedName = await storage.read(key: 'name');
+    final storedPassword = await storage.read(key: 'password');
+    if (storedName != null && storedPassword != null) {
+      if (name == storedName && password == storedPassword) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @override
@@ -41,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Text(
-                'Welcome to the Warranty App',
+                'WarrantyApp',
                 style: TextStyle(fontSize: 24),
               ),
               const SizedBox(height: 20),
@@ -81,7 +101,10 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ProfilePage(name),
+                              builder: (context) => ProfilePage(
+                                name,
+                                color: selectedColor,
+                              ),
                             ),
                           );
                         } else {
@@ -105,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         }
                       },
-                      child: const Text('Log'),
+                      child: const Text('Login'),
                     ),
                     const SizedBox(width: 13),
                     ElevatedButton(

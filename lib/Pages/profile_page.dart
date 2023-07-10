@@ -6,8 +6,10 @@ import 'editproduct_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final String username;
+  final Color color;
 
-  const ProfilePage(this.username, {super.key});
+  const ProfilePage(this.username, {required this.color, Key? key})
+      : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -21,6 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: widget.color,
         title: Text('Items ${widget.username}'),
         actions: [
           IconButton(
