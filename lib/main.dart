@@ -6,10 +6,12 @@ void main() {
   runApp(const MyApp());
 }
 
+//TODO: add save to file and read data from, repair Drawer and style
+
 class MyApp extends StatelessWidget {
   static UserSettings usersettings = UserSettings(
     color: Colors.orange,
-    language: 'EN',
+    language: 'PL',
     darkTheme: false,
   );
 

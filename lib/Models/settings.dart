@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class UserSettings {
   Color color = Colors.orange;
   bool darkTheme = false;
-  String language = 'EN';
+  String language = 'PL';
 
   UserSettings({
     required this.color,
@@ -14,7 +14,7 @@ class UserSettings {
   void setFabricSettings() {
     color = Colors.orange;
     darkTheme = false;
-    language = 'EN';
+    language = 'PL';
   }
 
   void setColor(Color newcolor) {

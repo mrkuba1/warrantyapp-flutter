@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:warrantyapp/Models/settings.dart';
+import 'package:warrantyapp/Pages/about_page.dart';
 import 'package:warrantyapp/Pages/addproduct_page.dart';
 import 'package:warrantyapp/Pages/editproduct_page.dart';
 import 'package:warrantyapp/Models/product.dart';
-import 'package:warrantyapp/Pages/settings_page.dart';
+import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class ProfilePage extends StatefulWidget {
   final UserSettings userSettings;
 
-  const ProfilePage(this.userSettings, {super.key});
+  const ProfilePage(this.userSettings, {Key? key}) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -46,12 +49,27 @@ class _ProfilePageState extends State<ProfilePage> {
       nameText = 'WarrantyApp';
       homeText = 'Strona Główna';
       settingsText = 'Ustawienia';
-      aboutText = 'O mas';
+      aboutText = 'O nas';
       typeText = 'Typ';
       amountText = 'Wartość';
       purchaseDateText = 'Data zakupu';
       storeText = 'Sklep';
       expirationDateText = 'Data wygaśnięcia';
+    }
+
+    _loadProducts();
+  }
+
+  Future<void> _loadProducts() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/products.json');
+    if (await file.exists()) {
+      final contents = await file.readAsString();
+      final List<dynamic> jsonList = jsonDecode(contents);
+      setState(() {
+        products =
+            jsonList.map((dynamic json) => Product.fromJson(json)).toList();
+      });
     }
   }
 
@@ -59,6 +77,14 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _selectedIndex = index;
     });
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AboutPage(),
+        ),
+      );
+    }
   }
 
   int _selectedIndex = 0;
@@ -92,12 +118,6 @@ class _ProfilePageState extends State<ProfilePage> {
               selected: _selectedIndex == 1,
               onTap: () {
                 _onItemTapped(1);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SettingsPage(widget.userSettings),
-                  ),
-                );
                 Navigator.pop(context);
               },
             ),
@@ -125,6 +145,7 @@ class _ProfilePageState extends State<ProfilePage> {
               setState(() {
                 products.add(newProduct);
               });
+              _saveProducts();
             }
           });
         },
@@ -143,6 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
             onDismissed: (direction) {
               setState(() {
                 products.removeAt(index);
+                _saveProducts();
               });
             },
             background: Container(
@@ -193,8 +215,17 @@ class _ProfilePageState extends State<ProfilePage> {
           if (productIndex != -1) {
             products[productIndex] = updatedProduct;
           }
+          _saveProducts();
         });
       }
     });
+  }
+
+  Future<void> _saveProducts() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/products.json');
+    final List<Map<String, dynamic>> productList =
+        products.map((p) => p.toJson()).toList();
+    await file.writeAsString(jsonEncode(productList));
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:warrantyapp/Models/product.dart';
+import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class EditProductPage extends StatefulWidget {
   final Product product;
@@ -36,6 +39,31 @@ class _EditProductPageState extends State<EditProductPage> {
     warrantyLengthController =
         TextEditingController(text: widget.product.lengthWarranty.toString());
     kontrola = widget.product.lengthWarranty != 2;
+
+    _loadProductData(); // Load product data before editing
+  }
+
+  Future<void> _loadProductData() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/products.json');
+    List<Product> products = await _loadProductsFromFile(file);
+
+    int index = products.indexWhere((p) => p.id == widget.product.id);
+    if (index != -1) {
+      Product selectedProduct = products[index];
+      setState(() {
+        nameController.text = selectedProduct.name;
+        typeController.text = selectedProduct.type;
+        purchaseDateController.text =
+            '${selectedProduct.purchaseDate.year}-${selectedProduct.purchaseDate.month.toString().padLeft(2, '0')}-${selectedProduct.purchaseDate.day.toString().padLeft(2, '0')}';
+        amountController.text = selectedProduct.amount.toString();
+        selectedCurrency = selectedProduct.currency;
+        storeController.text = selectedProduct.store;
+        warrantyLengthController.text =
+            selectedProduct.lengthWarranty.toString();
+        kontrola = selectedProduct.lengthWarranty != 2;
+      });
+    }
   }
 
   @override
@@ -154,6 +182,9 @@ class _EditProductPageState extends State<EditProductPage> {
                   store: store,
                   lengthWarranty: lengthWarranty,
                 );
+
+                _saveProductToFile(
+                    updatedProduct); // Save the updated product to file
                 Navigator.pop(context, updatedProduct);
               },
               child: const Text('Save'),
@@ -162,5 +193,30 @@ class _EditProductPageState extends State<EditProductPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _saveProductToFile(Product product) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/products.json');
+
+    List<Product> products = await _loadProductsFromFile(file);
+    int index = products.indexWhere((p) => p.id == product.id);
+    if (index != -1) {
+      products[index] = product;
+    }
+
+    final List<Map<String, dynamic>> productList =
+        products.map((p) => p.toJson()).toList();
+
+    await file.writeAsString(jsonEncode(productList));
+  }
+
+  Future<List<Product>> _loadProductsFromFile(File file) async {
+    if (await file.exists()) {
+      final contents = await file.readAsString();
+      final List<dynamic> jsonList = jsonDecode(contents);
+      return jsonList.map((dynamic json) => Product.fromJson(json)).toList();
+    }
+    return [];
   }
 }

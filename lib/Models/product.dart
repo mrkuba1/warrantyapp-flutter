@@ -19,6 +19,32 @@ class Product {
     required this.lengthWarranty,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'type': type,
+      'purchaseDate': purchaseDate.toIso8601String(),
+      'amount': amount,
+      'currency': currency,
+      'store': store,
+      'lengthWarranty': lengthWarranty,
+    };
+  }
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['id'],
+      name: json['name'],
+      type: json['type'],
+      purchaseDate: DateTime.parse(json['purchaseDate']),
+      amount: json['amount'],
+      currency: json['currency'],
+      store: json['store'],
+      lengthWarranty: json['lengthWarranty'],
+    );
+  }
+
   @override
   String toString() {
     return 'Product(id: $id, name: $name, type: $type, '

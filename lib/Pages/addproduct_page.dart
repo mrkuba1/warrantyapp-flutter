@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+
 import 'package:warrantyapp/Models/product.dart';
 
 class AddProductPage extends StatefulWidget {
-  const AddProductPage({super.key});
+  const AddProductPage({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _AddProductPageState createState() => _AddProductPageState();
 }
 
@@ -142,6 +145,7 @@ class _AddProductPageState extends State<AddProductPage> {
                   store: store,
                   lengthWarranty: lengthWarranty,
                 );
+                _saveProductToFile(newProduct);
                 Navigator.pop(context, newProduct);
               },
               child: const Text('Save'),
@@ -150,5 +154,27 @@ class _AddProductPageState extends State<AddProductPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _saveProductToFile(Product product) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/products.json');
+
+    List<Product> products = await _loadProductsFromFile(file);
+    products.add(product);
+
+    final List<Map<String, dynamic>> productList =
+        products.map((Product p) => p.toJson()).toList();
+
+    await file.writeAsString(jsonEncode(productList));
+  }
+
+  Future<List<Product>> _loadProductsFromFile(File file) async {
+    if (await file.exists()) {
+      final contents = await file.readAsString();
+      final List<dynamic> jsonList = jsonDecode(contents);
+      return jsonList.map((dynamic json) => Product.fromJson(json)).toList();
+    }
+    return [];
   }
 }
