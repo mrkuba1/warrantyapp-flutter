@@ -6,7 +6,7 @@ loading: =##########----------= 50%
 ## Table of Contents
  * [Descrption](#description)
  * [Instalation](#installation)
- * [Contact]
+ * [Contact](#contact)
 
 ## **Description:** 
 A mobile app storing warranty data for products purchased by the user. Making this project taught me a lot, from better level of Dart and flutter to using GitHub.
@@ -31,7 +31,7 @@ flutter packages get
 
 
 
-## Contact
+## **Contact**
 
 
 > GitHub - [Kubix](https://github.com/mrkuba1)
