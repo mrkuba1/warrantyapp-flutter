@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:warrantyapp/product_class.dart';
+import 'package:warrantyapp/Models/product.dart';
 
 class EditProductPage extends StatefulWidget {
   final Product product;

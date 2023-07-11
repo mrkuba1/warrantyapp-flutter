@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:warrantyapp/product_class.dart';
+import 'package:warrantyapp/Models/product.dart';
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});

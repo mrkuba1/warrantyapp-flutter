@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:warrantyapp/Pages/login_page.dart';
+import 'package:warrantyapp/Models/settings.dart';
+import 'package:warrantyapp/Pages/profile_page.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  static UserSettings usersettings = UserSettings(
+    color: Colors.orange,
+    language: 'EN',
+    darkTheme: false,
+  );
+
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const LoginPage(),
+      home: ProfilePage(usersettings),
     );
   }
-
-  //TODO: Gesture, PL language, colors, style, save to file and read data from files,
 }

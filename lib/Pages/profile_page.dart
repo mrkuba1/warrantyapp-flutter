@@ -1,49 +1,133 @@
 import 'package:flutter/material.dart';
+import 'package:warrantyapp/Models/settings.dart';
 import 'package:warrantyapp/Pages/addproduct_page.dart';
-import 'package:warrantyapp/product_class.dart';
-
-import 'editproduct_page.dart';
+import 'package:warrantyapp/Pages/editproduct_page.dart';
+import 'package:warrantyapp/Models/product.dart';
+import 'package:warrantyapp/Pages/settings_page.dart';
 
 class ProfilePage extends StatefulWidget {
-  final String username;
-  final Color color;
+  final UserSettings userSettings;
 
-  const ProfilePage(this.username, {required this.color, Key? key})
-      : super(key: key);
+  const ProfilePage(this.userSettings, {super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   List<Product> products = [];
+  String titleText = 'Items',
+      nameText = 'WarrantyApp',
+      homeText = 'Home',
+      settingsText = 'Settings',
+      aboutText = 'About',
+      typeText = 'Type',
+      amountText = 'Amount',
+      purchaseDateText = 'Purchase Date',
+      storeText = 'Store',
+      expirationDateText = 'Expiration Date';
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.userSettings.language == 'EN') {
+      titleText = 'Items';
+      nameText = 'WarrantyApp';
+      homeText = 'Home';
+      settingsText = 'Settings';
+      aboutText = 'About';
+      typeText = 'Type';
+      amountText = 'Amount';
+      purchaseDateText = 'Purchase Date';
+      storeText = 'Store';
+      expirationDateText = 'Expiration Date';
+    } else if (widget.userSettings.language == 'PL') {
+      titleText = 'Przedmioty';
+      nameText = 'WarrantyApp';
+      homeText = 'Strona Główna';
+      settingsText = 'Ustawienia';
+      aboutText = 'O mas';
+      typeText = 'Typ';
+      amountText = 'Wartość';
+      purchaseDateText = 'Data zakupu';
+      storeText = 'Sklep';
+      expirationDateText = 'Data wygaśnięcia';
+    }
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: widget.color,
-        title: Text('Items ${widget.username}'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AddProductPage(),
-                ),
-              ).then((newProduct) {
-                if (newProduct != null) {
-                  setState(() {
-                    products.add(newProduct);
-                  });
-                }
+        title: Text(titleText),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('WarrantyApp'),
+            ),
+            ListTile(
+              title: Text(homeText),
+              selected: _selectedIndex == 0,
+              onTap: () {
+                _onItemTapped(0);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text(settingsText),
+              selected: _selectedIndex == 1,
+              onTap: () {
+                _onItemTapped(1);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SettingsPage(widget.userSettings),
+                  ),
+                );
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text(aboutText),
+              selected: _selectedIndex == 2,
+              onTap: () {
+                _onItemTapped(2);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddProductPage(),
+            ),
+          ).then((newProduct) {
+            if (newProduct != null) {
+              setState(() {
+                products.add(newProduct);
               });
-            },
-          ),
-        ],
+            }
+          });
+        },
       ),
       body: ListView.builder(
         itemCount: products.length,
@@ -75,14 +159,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: ExpansionTile(
                   title: Text(product.name, style: TextStyle(color: textColor)),
                   subtitle: Text(
-                      'Type: ${product.type}\nAmount: ${product.currency} ${product.amount.toStringAsFixed(2)}'),
+                      '$typeText: ${product.type}\n$amountText: ${product.currency} ${product.amount.toStringAsFixed(2)}'),
                   trailing: const Icon(Icons.more_vert),
                   children: [
                     ListTile(
                       title: Text(
-                          'Purchase Date: ${product.purchaseDate.year}-${product.purchaseDate.month.toString().padLeft(2, '0')}-${product.purchaseDate.day.toString().padLeft(2, '0')}'),
+                        '$purchaseDateText: ${product.purchaseDate.year}-${product.purchaseDate.month.toString().padLeft(2, '0')}-${product.purchaseDate.day.toString().padLeft(2, '0')}',
+                      ),
                       subtitle: Text(
-                          'Store: ${product.store}\nExpiration Date: ${expirationDate.year}-${expirationDate.month.toString().padLeft(2, '0')}-${expirationDate.day.toString().padLeft(2, '0')}'),
+                        '$storeText: ${product.store}\n$expirationDateText: ${expirationDate.year}-${expirationDate.month.toString().padLeft(2, '0')}-${expirationDate.day.toString().padLeft(2, '0')}',
+                      ),
                     ),
                   ],
                 ),

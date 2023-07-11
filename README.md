@@ -1,6 +1,6 @@
 # **WarrnatyApp mobile flutter**
 
-```
+```yml
 loading: =##########----------= 50%
 ```
 ## Table of Contents
@@ -34,4 +34,4 @@ flutter packages get
 ## Contact
 
 
-> GitHub - [@mrkuba1](https://github.com/mrkuba1)
+> GitHub - [Kubix](https://github.com/mrkuba1)
