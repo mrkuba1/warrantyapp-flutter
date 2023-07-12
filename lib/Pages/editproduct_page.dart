@@ -4,10 +4,14 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
+import 'package:warrantyapp/Models/settings.dart';
+
 class EditProductPage extends StatefulWidget {
   final Product product;
+  final UserSettings usersettings;
 
-  const EditProductPage({Key? key, required this.product}) : super(key: key);
+  const EditProductPage(this.usersettings, {Key? key, required this.product})
+      : super(key: key);
 
   @override
   _EditProductPageState createState() => _EditProductPageState();
@@ -87,8 +91,10 @@ class _EditProductPageState extends State<EditProductPage> {
             ),
             TextField(
               controller: purchaseDateController,
-              decoration: const InputDecoration(
-                  icon: Icon(Icons.calendar_today), labelText: "Enter Date"),
+              decoration: InputDecoration(
+                  icon: Icon(Icons.calendar_today,
+                      color: widget.usersettings.color),
+                  labelText: "Enter Date"),
               readOnly: true,
               onTap: () async {
                 final selectedDate = await showDatePicker(
@@ -96,6 +102,16 @@ class _EditProductPageState extends State<EditProductPage> {
                   initialDate: DateTime.now(),
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2100),
+                  builder: (BuildContext context, Widget? child) {
+                    return Theme(
+                      data: ThemeData.dark().copyWith(
+                        colorScheme: ColorScheme.light(
+                          primary: widget.usersettings.color,
+                        ),
+                      ),
+                      child: child!,
+                    );
+                  },
                 );
                 if (selectedDate != null) {
                   final formattedDate =

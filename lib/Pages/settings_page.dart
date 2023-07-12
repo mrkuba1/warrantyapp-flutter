@@ -4,7 +4,7 @@ import 'package:warrantyapp/Models/settings.dart';
 
 class SettingsPage extends StatefulWidget {
   final UserSettings userSettings;
-  const SettingsPage(this.userSettings);
+  const SettingsPage(this.userSettings, {super.key});
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
@@ -18,7 +18,7 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
     selectedColor = widget.userSettings.color;
     selectedLanguage = widget.userSettings.language;
-    isDarkThemeEnabled = widget.userSettings.darkTheme;
+    isDarkThemeEnabled = widget.userSettings.isDarkTheme;
   }
 
   @override

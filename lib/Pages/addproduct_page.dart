@@ -4,9 +4,12 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 import 'package:warrantyapp/Models/product.dart';
+import 'package:warrantyapp/Models/settings.dart';
 
 class AddProductPage extends StatefulWidget {
-  const AddProductPage({Key? key}) : super(key: key);
+  final UserSettings usersettings;
+
+  const AddProductPage(this.usersettings, {Key? key}) : super(key: key);
 
   @override
   _AddProductPageState createState() => _AddProductPageState();
@@ -42,17 +45,20 @@ class _AddProductPageState extends State<AddProductPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: 'Name'),
-            ),
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Name')),
             TextField(
               controller: typeController,
               decoration: const InputDecoration(labelText: 'Type'),
             ),
             TextField(
                 controller: purchaseDateController,
-                decoration: const InputDecoration(
-                    icon: Icon(Icons.calendar_today), labelText: "Enter Date"),
+                decoration: InputDecoration(
+                    icon: Icon(
+                      Icons.calendar_today,
+                      color: widget.usersettings.color,
+                    ),
+                    labelText: "Enter Date"),
                 readOnly: true,
                 onTap: () async {
                   final selectedDate = await showDatePicker(
@@ -60,6 +66,16 @@ class _AddProductPageState extends State<AddProductPage> {
                     initialDate: DateTime.now(),
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
+                    builder: (BuildContext context, Widget? child) {
+                      return Theme(
+                        data: ThemeData.dark().copyWith(
+                          colorScheme: ColorScheme.light(
+                            primary: widget.usersettings.color,
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
                   );
                   if (selectedDate != null) {
                     final formattedDate =

@@ -8,10 +8,12 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
-class ProfilePage extends StatefulWidget {
-  final UserSettings userSettings;
+import 'package:warrantyapp/Pages/settings_page.dart';
 
-  const ProfilePage(this.userSettings, {Key? key}) : super(key: key);
+class ProfilePage extends StatefulWidget {
+  final UserSettings usersettings;
+
+  const ProfilePage(this.usersettings, {Key? key}) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -33,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    if (widget.userSettings.language == 'EN') {
+    if (widget.usersettings.language == 'EN') {
       titleText = 'Items';
       nameText = 'WarrantyApp';
       homeText = 'Home';
@@ -44,7 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
       purchaseDateText = 'Purchase Date';
       storeText = 'Store';
       expirationDateText = 'Expiration Date';
-    } else if (widget.userSettings.language == 'PL') {
+    } else if (widget.usersettings.language == 'PL') {
       titleText = 'Przedmioty';
       nameText = 'WarrantyApp';
       homeText = 'Strona Główna';
@@ -74,15 +76,27 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    if (index == 2) {
+    if (index == 0) {
+      // Navigate to the home page
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AboutPage(),
+          builder: (context) => ProfilePage(widget.usersettings),
         ),
+      );
+    } else if (index == 1) {
+      // Navigate to the settings page
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SettingsPage(widget.usersettings),
+        ),
+      );
+    } else if (index == 2) {
+      // Navigate to the about page
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const AboutPage()),
       );
     }
   }
@@ -99,11 +113,9 @@ class _ProfilePageState extends State<ProfilePage> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('WarrantyApp'),
+            DrawerHeader(
+              decoration: BoxDecoration(color: widget.usersettings.color),
+              child: const Text('WarrantyApp'),
             ),
             ListTile(
               title: Text(homeText),
@@ -126,6 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
               selected: _selectedIndex == 2,
               onTap: () {
                 _onItemTapped(2);
+                const AboutPage();
                 Navigator.pop(context);
               },
             ),
@@ -138,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const AddProductPage(),
+              builder: (context) => AddProductPage(widget.usersettings),
             ),
           ).then((newProduct) {
             if (newProduct != null) {
@@ -157,7 +170,7 @@ class _ProfilePageState extends State<ProfilePage> {
           var expirationDate = product.purchaseDate
               .add(Duration(days: product.lengthWarranty * 365));
           var difference = expirationDate.difference(DateTime.now()).inDays;
-          Color textColor = difference > 30 ? Colors.black : Colors.red;
+          Color textColor = difference > 30 ? Colors.white : Colors.red;
           return Dismissible(
             key: Key(product.id),
             direction: DismissDirection.horizontal,
@@ -179,10 +192,15 @@ class _ProfilePageState extends State<ProfilePage> {
               },
               child: Card(
                 child: ExpansionTile(
-                  title: Text(product.name, style: TextStyle(color: textColor)),
+                  title: Text(
+                    product.name,
+                    style: TextStyle(color: textColor),
+                  ),
                   subtitle: Text(
                       '$typeText: ${product.type}\n$amountText: ${product.currency} ${product.amount.toStringAsFixed(2)}'),
-                  trailing: const Icon(Icons.more_vert),
+                  trailing: const Icon(
+                    Icons.more_vert,
+                  ),
                   children: [
                     ListTile(
                       title: Text(
@@ -206,7 +224,10 @@ class _ProfilePageState extends State<ProfilePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditProductPage(product: product),
+        builder: (context) => EditProductPage(
+          widget.usersettings,
+          product: product,
+        ),
       ),
     ).then((updatedProduct) {
       if (updatedProduct != null) {
